@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- tokens: space-separated RGB so Tailwind can apply opacity ---- */
+:root,
+:root[data-theme='dark'] {
+  --bg: 8 22 26; --card: 15 36 41; --raised: 23 51 57; --line: 36 68 75;
+  --ink: 233 242 239; --ink-2: 196 214 210; --mute: 135 163 159;
+  --accent: 255 181 52; --on-accent: 28 18 0; --link: 255 190 80; --pink: 255 122 150;
+  --ok: 98 214 164; --warn: 255 190 80; --bad: 255 122 122; --info: 125 200 255;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: 236 243 242; --card: 255 255 255; --raised: 244 249 248; --line: 208 224 222;
+    --ink: 8 34 39; --ink-2: 40 68 73; --mute: 82 112 116;
+    --accent: 247 166 0; --on-accent: 28 18 0; --link: 150 88 0; --pink: 200 40 90;
+    --ok: 14 128 82; --warn: 150 88 0; --bad: 187 38 52; --info: 14 106 188;
+    color-scheme: light;
+  }
+}
+:root[data-theme='light'] {
+  --bg: 236 243 242; --card: 255 255 255; --raised: 244 249 248; --line: 208 224 222;
+  --ink: 8 34 39; --ink-2: 40 68 73; --mute: 82 112 116;
+  --accent: 247 166 0; --on-accent: 28 18 0; --link: 150 88 0; --pink: 200 40 90;
+  --ok: 14 128 82; --warn: 150 88 0; --bad: 187 38 52; --info: 14 106 188;
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; }
+body { background: rgb(var(--bg)); color: rgb(var(--ink)); font-family: 'Instrument Sans Variable', 'Instrument Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, .font-display { font-family: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif; letter-spacing: -0.025em; }
+.num { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45; }
+  .btn-primary { @apply btn bg-ops-accent text-ops-on-accent hover:brightness-105; }
+  .btn-ghost { @apply btn bg-ops-raised text-white hover:bg-ops-line/70; }
+  .btn-danger { @apply btn tone-bad hover:brightness-110; }
+  .input { @apply w-full rounded-xl border border-ops-line bg-ops-raised px-3.5 py-2.5 text-sm text-white placeholder:text-ops-mute; }
+  .input:focus { outline: 2px solid rgb(var(--accent)); outline-offset: 0; }
+  .card { @apply rounded-3xl bg-ops-card p-5 sm:p-6; }
+  .tile { @apply rounded-2xl bg-ops-raised p-4; }
+  .label { @apply mb-1.5 block text-sm font-medium text-ops-mute; }
+  .link { @apply text-ops-link underline underline-offset-2; }
+
+  .tone-ok { color: rgb(var(--ok)); background: rgb(var(--ok) / 0.14); }
+  .tone-warn { color: rgb(var(--warn)); background: rgb(var(--warn) / 0.15); }
+  .tone-bad { color: rgb(var(--bad)); background: rgb(var(--bad) / 0.15); }
+  .tone-info { color: rgb(var(--info)); background: rgb(var(--info) / 0.15); }
+  .tone-mute { color: rgb(var(--mute)); background: rgb(var(--mute) / 0.16); }
+  .badge { @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold; }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+
+  td .btn-ghost, td .btn-primary, td .btn-danger { padding: 0.4rem 0.95rem; }
+
+  .prose-ops h2 { @apply mt-6 font-display text-2xl font-bold text-white; }
+  .prose-ops h3 { @apply mt-4 font-display text-xl font-bold text-white; }
+  .prose-ops p { @apply mt-3 max-w-[68ch] leading-relaxed text-slate-300; }
+  .prose-ops ul { @apply mt-3 list-disc pl-6 text-slate-300; }
+  .prose-ops ol { @apply mt-3 list-decimal pl-6 text-slate-300; }
+  .prose-ops a { @apply text-ops-link underline; }
+  .prose-ops blockquote { @apply mt-3 border-l-4 border-ops-accent pl-4 italic text-slate-400; }
+}
+
+/* the one orchestrated moment: seats fill once when a ring mounts */
+@keyframes seat-fill { from { stroke-dasharray: 0 1000; } }
+.seat-fill { animation: seat-fill 700ms cubic-bezier(.2,.7,.2,1) backwards; }

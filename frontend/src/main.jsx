@@ -12,6 +12,7 @@ import { Cohorts, Contributions, MythicOverview, Payouts, Verification } from '.
 import ResultsAdmin from './pages/admin/ResultsAdmin'
 import AnnouncementsAdmin from './pages/admin/AnnouncementsAdmin'
 import JoinClan from './pages/JoinClan'
+import ClanRules from './pages/ClanRules'
 import ClanRequests from './pages/admin/ClanRequests'
 import AccountsAdmin from './pages/admin/AccountsAdmin'
 
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Login register />} />
             <Route path="/join-clan" element={<JoinClan />} />
+            <Route path="/clan-rules" element={<ClanRules />} />
             <Route path="/mythic-circle" element={<MythicLanding />} />
             <Route path="/dashboard/mythic-circle" element={<RequireAuth><MythicDashboard /></RequireAuth>} />
             <Route path="/results" element={<Results />} />

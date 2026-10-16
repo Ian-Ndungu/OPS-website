@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { ErrorBox, Field } from '../components/ui'
 
@@ -22,11 +23,12 @@ export default function JoinClan() {
       <h1 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-white sm:text-5xl">Your next squad starts here.</h1>
       <p className="mt-4 leading-relaxed text-ops-mute">Apply to join OPSKe. No website account needed. Update your in-game profile name to include the clan tag, then send a clear screenshot showing your name and player ID.</p>
     </div>
+    <aside className="card space-y-3"><h2 className="font-display text-xl font-bold text-white">Before you apply</h2><p className="text-sm leading-relaxed text-ops-mute">Clan Wars participation is mandatory. Stay active, respect the squad, and play fairly. Seven days inactive without notice can lead to removal.</p><Link className="link inline-block py-2 text-sm font-semibold" to="/clan-rules">Read all 8 clan rules →</Link></aside>
     {receipt ? <div role="status" className="tile space-y-3"><h2 className="font-display text-2xl font-bold">Request received</h2><p>Your reference is #{receipt.id}. Your application is pending admin review. The team will use your contact details to follow up.</p><button className="btn-ghost" onClick={() => setReceipt(null)}>Send another request</button></div> :
       <form onSubmit={submit} className="space-y-5 rounded-[32px] bg-ops-card p-6 sm:p-8">
         <ErrorBox message={error} />
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Game / division"><input className="input" name="game" required minLength={2} maxLength={80} placeholder="e.g. PUBG Mobile" /></Field>
+          <Field label="Game / division"><input className="input" name="game" required minLength={2} maxLength={80} placeholder="e.g. Call of Duty: Mobile" /></Field>
           <Field label="Player ID / UID"><input className="input" name="player_id" required maxLength={80} /></Field>
           <Field label="Updated in-game name"><input className="input" name="gamer_tag" required minLength={2} maxLength={64} placeholder="Your name including the clan tag" /></Field>
           <Field label="Clan tag added to your name"><input className="input" name="clan_tag" required maxLength={32} placeholder="Enter the tag you added" /></Field>

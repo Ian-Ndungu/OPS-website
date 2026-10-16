@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { api, fmtDate, kes } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { Badge, Empty, ErrorBox, Field, Spinner, useAsync } from '../components/ui'
 import { Podium, Standings, TeamLogo } from '../components/Leaderboard'
 import SeatRing from '../components/SeatRing'
+import { HomeActivity, HomeCommunity } from '../components/HomeSections'
 
 const CAT_TONE = { 'Important Notices': 'tone-bad', Maintenance: 'tone-warn', 'Tournament Updates': 'tone-info', 'Mythic Circle': 'tone-ok' }
 const CategoryChip = ({ c }) => <span className={`badge ${CAT_TONE[c] || 'tone-mute'}`}>{c}</span>
@@ -69,7 +70,8 @@ export function Home() {
             Your home for OPSKe tournament results, clan news, and shared goals. Follow the action and build your savings with Mythic Circle, our fixed-term savings program for verified clan members.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/results" className="btn-primary !px-6 !py-3 text-base">See latest results</Link>
+            <Link to="/join-clan" className="btn-primary !px-6 !py-3 text-base">Join OPSKe</Link>
+            <Link to="/results" className="btn-ghost !px-6 !py-3 text-base">See latest results</Link>
             <Link to="/mythic-circle" className="btn-ghost !px-6 !py-3 text-base">How Mythic Circle works</Link>
           </div>
         </div>
@@ -113,6 +115,8 @@ export function Home() {
           )}
         </div>
       </section>
+      <HomeActivity />
+      <HomeCommunity />
     </div>
   )
 }
@@ -244,7 +248,14 @@ export function ResultDetail() {
 /* ------------------------------------------------------ Announcements */
 export function Announcements() {
   const [q, setQ] = useState('')
-  const [cat, setCat] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const cat = searchParams.get('category') || ''
+  const setCat = (value) => {
+    const next = new URLSearchParams(searchParams)
+    if (value) next.set('category', value)
+    else next.delete('category')
+    setSearchParams(next)
+  }
   const cats = useAsync(() => api.get('/api/announcements/categories'))
   const { data, loading, error } = useAsync(
     () => api.get(`/api/announcements?${new URLSearchParams({ ...(q && { q }), ...(cat && { category: cat }) })}`), [q, cat])

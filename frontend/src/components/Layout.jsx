@@ -112,7 +112,7 @@ export function SiteLayout() {
         )}
       </header>
       <main className="mx-auto min-w-0 max-w-6xl px-4 pb-12 pt-6 sm:pb-16 sm:pt-10 sm:px-6"><Outlet /></main>
-      <footer className="mx-auto max-w-6xl px-6 pb-10 text-sm text-ops-mute">OPS Esports. Official results and member services.</footer>
+      <footer className="mx-auto max-w-6xl px-6 pb-10 text-sm text-ops-mute">OPS Esports. Official results and member services. <Link to="/clan-rules" className="link ml-2 inline-block py-2">Clan rules</Link></footer>
     </div>
   )
 }

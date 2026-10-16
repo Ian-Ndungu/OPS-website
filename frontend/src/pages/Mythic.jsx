@@ -27,7 +27,7 @@ export function MythicLanding() {
       {c.banner?.text && <div className="tone-warn rounded-2xl p-4 text-center text-sm font-semibold">{c.banner.text}</div>}
       <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
         <div>
-          <h1 className="max-w-[14ch] text-balance font-display text-5xl font-extrabold leading-[0.98] text-white sm:text-6xl lg:text-7xl">Save with your clan. Get paid together.</h1>
+          <h1 className="max-w-[14ch] text-balance font-display text-4xl font-extrabold leading-[0.98] text-white sm:text-6xl lg:text-7xl">Save with your clan. Get paid together.</h1>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-slate-300">{c.landing_description?.text || 'The Mythic Circle is a fixed-term savings program for verified OPS members. Everyone puts in the same amount each month, and everyone receives KSh 7,000 on the same day at the end.'}</p>
           {c.registration_announcement?.text && <p className="tone-ok mt-4 inline-block rounded-2xl px-4 py-2 text-sm font-semibold">{c.registration_announcement.text}</p>}
           <div className="mt-8 flex flex-wrap gap-3">
@@ -77,8 +77,8 @@ export function MythicLanding() {
       )}
 
       <section>
-        <h2 className="mb-6 font-display text-4xl font-extrabold text-white">How it works</h2>
-        <ol className="grid gap-3 md:grid-cols-5">
+        <h2 className="mb-6 font-display text-3xl sm:text-4xl font-extrabold text-white">How it works</h2>
+        <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           {STEPS.map(([t, d], i) => (
             <li key={t} className="rounded-[28px] bg-ops-card p-5">
               <span className="num flex h-9 w-9 items-center justify-center rounded-full bg-ops-raised font-display text-lg font-extrabold text-ops-link">{i + 1}</span>
@@ -175,14 +175,14 @@ export function MythicDashboard() {
   if (me.error) return <ErrorBox message={me.error} />
   const { application: app, membership: m } = me.data
 
-  if (!app) return <div className="space-y-6"><h1 className="font-display text-5xl font-extrabold text-white">Mythic Circle</h1><ApplyForm plans={plans.data?.plans} onDone={me.reload} /></div>
+  if (!app) return <div className="space-y-6"><h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Mythic Circle</h1><ApplyForm plans={plans.data?.plans} onDone={me.reload} /></div>
 
   const cp = m?.cohort_progress
   const payable = m && ['active', 'contributions_in_progress'].includes(m.cohort.status)
   return (
     <div className="space-y-6">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">My Mythic Circle</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">My Mythic Circle</h1>
 
       {!m && (
         <div className="card space-y-4 !rounded-[32px]">
@@ -220,7 +220,7 @@ export function MythicDashboard() {
               {m.next_due ? (
                 <div className="rounded-[32px] bg-ops-accent p-6 text-ops-on-accent sm:p-8">
                   <div className="text-sm font-semibold opacity-80">Next contribution, month {m.next_due.month_no}</div>
-                  <div className="num mt-1 font-display text-6xl font-extrabold">{kes(m.next_due.amount_kes)}</div>
+                  <div className="num mt-1 font-display text-4xl sm:text-6xl font-extrabold">{kes(m.next_due.amount_kes)}</div>
                   <div className="mt-1 font-medium">Due {fmtDate(m.next_due.due_date)}. Status: {label(m.next_due.status)}.</div>
                   <button className="mt-5 inline-flex items-center justify-center rounded-full bg-ops-bg px-6 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50" disabled={!payable}
                     onClick={() => act(() => api.post(`/api/mythic/contributions/${m.next_due.id}/pay`), 'M-Pesa prompt sent. Approve it on your phone. Your status updates after confirmation.')}>Pay with M-Pesa</button>
@@ -239,7 +239,7 @@ export function MythicDashboard() {
               <div className="my-4">
                 <SeatRing seats={cp.capacity} filled={(cp.collected_kes / cp.target_kes) * cp.capacity} size={250}
                   label={`Circle is ${cp.percent} percent funded`}>
-                  <div className="num font-display text-5xl font-extrabold text-white">{cp.percent}%</div>
+                  <div className="num font-display text-3xl sm:text-5xl font-extrabold text-white">{cp.percent}%</div>
                   <div className="text-sm text-ops-mute">funded</div>
                 </SeatRing>
               </div>
@@ -250,10 +250,10 @@ export function MythicDashboard() {
           <section>
             <h2 className="mb-3 font-display text-2xl font-bold text-white">Your payments</h2>
             {m.timeline.length ? (
-              <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {m.timeline.map((t) => (
                   <li key={t.id} className="rounded-3xl bg-ops-card p-4">
-                    <div className="flex items-center justify-between"><span className="font-display text-lg font-bold text-white">Month {t.month_no}</span><Badge status={t.status}>{t.status}</Badge></div>
+                    <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-display text-lg font-bold text-white">Month {t.month_no}</span><Badge status={t.status}>{t.status}</Badge></div>
                     <div className="num mt-2 text-xl font-bold text-white">{kes(t.amount_kes)}</div>
                     <div className="text-sm text-ops-mute">Due {fmtDate(t.due_date)}</div>
                     {t.receipt && <button className="link mt-2 text-sm" onClick={() => downloadReceipt(t.id)}>Download receipt</button>}

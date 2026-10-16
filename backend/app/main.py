@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from . import models  # noqa: F401
 from .config import settings
 from .db import SessionLocal
-from .routers import announcements, auth, mythic, results
+from .routers import announcements, auth, clan, mythic, results
 from .services import announcements as ann_svc
 from .services import mythic as mythic_svc
 
@@ -50,7 +50,7 @@ for sub in ("announcements", "match-screenshots"):
     os.makedirs(os.path.join(settings.UPLOAD_DIR, sub), exist_ok=True)
     app.mount(f"/uploads/{sub}", StaticFiles(directory=os.path.join(settings.UPLOAD_DIR, sub)), name=sub)
 
-for r in (auth.router, mythic.router, results.router, announcements.router):
+for r in (auth.router, clan.router, mythic.router, results.router, announcements.router):
     app.include_router(r)
 
 

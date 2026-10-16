@@ -37,7 +37,7 @@ export default function AnnouncementsAdmin() {
     <div className="space-y-6">
       {node}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-5xl font-extrabold text-white">Announcements</h1>
+        <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Announcements</h1>
         <button className="btn-primary" onClick={() => setForm(blank())}>New announcement</button>
       </div>
       <select className="input max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
@@ -65,7 +65,7 @@ export default function AnnouncementsAdmin() {
         <Modal title={form.id ? 'Edit announcement' : 'New announcement'} onClose={() => setForm(null)}>
           <div className="space-y-3">
             <Field label="Title"><input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></Field>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Category"><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>{cats.data?.map((c) => <option key={c}>{c}</option>)}</select></Field>
               <Field label="Featured image"><input className="input" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => e.target.files[0] && upload(e.target.files[0]).catch((x) => toast(x.message, true))} /></Field>
             </div>

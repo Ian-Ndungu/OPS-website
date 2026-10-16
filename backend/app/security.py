@@ -34,7 +34,8 @@ def optional_user(token: str | None = Depends(oauth2), db: Session = Depends(get
         uid = int(jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])["sub"])
     except (JWTError, KeyError, ValueError):
         return None
-    return db.get(User, uid)
+    user = db.get(User, uid)
+    return user if user and user.account_status == "active" else None
 
 
 def current_user(user: User | None = Depends(optional_user)) -> User:

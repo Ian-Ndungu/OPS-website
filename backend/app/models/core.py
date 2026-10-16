@@ -28,6 +28,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
     gamer_tag: Mapped[str] = mapped_column(String(64), index=True)
+    account_status: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
     phone: Mapped[str | None] = mapped_column(String(20))
     role: Mapped[str] = mapped_column(String(32), default=Role.member.value)
     is_verified_member: Mapped[bool] = mapped_column(Boolean, default=False)

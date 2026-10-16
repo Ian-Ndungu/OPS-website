@@ -2,7 +2,7 @@ import { Table } from './ui'
 
 export function TeamLogo({ team, size = 'h-10 w-10' }) {
   return team.logo_url
-    ? <img src={team.logo_url} alt="" className={`${size} rounded-full object-cover`} />
+    ? <img src={team.logo_url} alt="" className={`${size} shrink-0 rounded-full object-cover`} />
     : <div className={`${size} flex shrink-0 items-center justify-center rounded-full bg-ops-raised font-display font-bold text-white`}>{team.team?.[0]}</div>
 }
 

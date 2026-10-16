@@ -29,6 +29,18 @@
 }
 
 html { scroll-behavior: smooth; }
+body { margin: 0; }
+#root { min-width: 0; }
+main, section, article, form, fieldset, .grid > *, .flex > * { min-width: 0; }
+h1, h2, h3, p, dd, .prose-ops { overflow-wrap: anywhere; }
+img, video, canvas { max-width: 100%; }
+.prose-ops img, .prose-ops video { height: auto; }
+.prose-ops pre, .prose-ops table { display: block; max-width: 100%; overflow-x: auto; }
+input, select, textarea { min-width: 0; max-width: 100%; }
+input[type='date'], input[type='datetime-local'] { min-height: 44px; }
+input[type='file'] { overflow: hidden; }
+button, a, input, select, textarea { touch-action: manipulation; }
+
 body { background: rgb(var(--bg)); color: rgb(var(--ink)); font-family: 'Instrument Sans Variable', 'Instrument Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, .font-display { font-family: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif; letter-spacing: -0.025em; }
 .num { font-variant-numeric: tabular-nums; }
@@ -36,11 +48,11 @@ h1, h2, h3, .font-display { font-family: 'Bricolage Grotesque Variable', 'Bricol
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 
 @layer components {
-  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold min-h-11 max-w-full whitespace-normal text-center transition-colors disabled:cursor-not-allowed disabled:opacity-45; }
   .btn-primary { @apply btn bg-ops-accent text-ops-on-accent hover:brightness-105; }
   .btn-ghost { @apply btn bg-ops-raised text-white hover:bg-ops-line/70; }
   .btn-danger { @apply btn tone-bad hover:brightness-110; }
-  .input { @apply w-full rounded-xl border border-ops-line bg-ops-raised px-3.5 py-2.5 text-sm text-white placeholder:text-ops-mute; }
+  .input { @apply min-w-0 w-full rounded-xl border border-ops-line bg-ops-raised px-3.5 py-2.5 text-base sm:text-sm text-white placeholder:text-ops-mute; }
   .input:focus { outline: 2px solid rgb(var(--accent)); outline-offset: 0; }
   .card { @apply rounded-3xl bg-ops-card p-5 sm:p-6; }
   .tile { @apply rounded-2xl bg-ops-raised p-4; }
@@ -52,8 +64,8 @@ h1, h2, h3, .font-display { font-family: 'Bricolage Grotesque Variable', 'Bricol
   .tone-bad { color: rgb(var(--bad)); background: rgb(var(--bad) / 0.15); }
   .tone-info { color: rgb(var(--info)); background: rgb(var(--info) / 0.15); }
   .tone-mute { color: rgb(var(--mute)); background: rgb(var(--mute) / 0.16); }
-  .badge { @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold; }
-  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+  .badge { @apply max-w-full break-words inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold; }
+  .badge::before { content: ''; width: 6px; height: 6px; flex-shrink: 0; border-radius: 999px; background: currentColor; }
 
   td .btn-ghost, td .btn-primary, td .btn-danger { padding: 0.4rem 0.95rem; }
 

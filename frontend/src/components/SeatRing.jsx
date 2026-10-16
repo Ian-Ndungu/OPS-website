@@ -13,7 +13,7 @@ export default function SeatRing({ seats, filled = 0, open = 0, size = 260, chil
   const startDeg = (i) => -90 + (i * 360) / seats + ((gap + w) / 2 / circ) * 360
   const openFrom = seats - Math.min(open, seats)
   return (
-    <div className="relative mx-auto" style={{ width: size, height: size }} role="img"
+    <div className="relative mx-auto aspect-square max-w-full" style={{ width: size }} role="img"
       aria-label={label || `${seats} seat circle, ${Math.min(open, seats)} seats open`}>
       <svg viewBox="0 0 200 200" className="h-full w-full">
         {Array.from({ length: seats }, (_, i) => {
@@ -32,7 +32,7 @@ export default function SeatRing({ seats, filled = 0, open = 0, size = 260, chil
           )
         })}
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-12 text-center">{children}</div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-[18%] text-center">{children}</div>
     </div>
   )
 }

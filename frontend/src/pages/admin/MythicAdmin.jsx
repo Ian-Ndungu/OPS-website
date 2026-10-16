@@ -12,7 +12,7 @@ export function MythicOverview() {
   const o = ov.data
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-5xl font-extrabold text-white">Mythic Circle</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Mythic Circle</h1>
       {ov.loading && <Spinner />}<ErrorBox message={ov.error} />
       {o && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -41,7 +41,7 @@ function Registration() {
     <section className="space-y-3">
       {node}
       <h2 className="font-display text-2xl font-bold text-white">Registration periods</h2>
-      <div className="card grid gap-3 sm:grid-cols-5">
+      <div className="card grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
         <select className="input" value={f.plan_code} onChange={set('plan_code')}><option value="A">7-player (A)</option><option value="B">10-player (B)</option></select>
         <input className="input" type="datetime-local" value={f.opens_at} onChange={set('opens_at')} aria-label="Opens" />
         <input className="input" type="datetime-local" value={f.closes_at} onChange={set('closes_at')} aria-label="Closes" />
@@ -86,7 +86,7 @@ function ContentEditor() {
       {node}
       <h2 className="font-display text-2xl font-bold text-white">Content management</h2>
       <p className="text-xs text-ops-mute">Plan terms (7 players × KSh 1,000 × 7 months; 10 players × KSh 700 × 10 months) are fixed in code and cannot be edited here.</p>
-      <div className="card flex items-center justify-between">
+      <div className="card flex flex-wrap items-center justify-between gap-3">
         <span className="text-sm">Enrollment is <b>{enabled ? 'enabled' : 'disabled'}</b></span>
         <button className="btn-ghost" onClick={() => save('enrollment_enabled', { enabled: !enabled })}>{enabled ? 'Disable' : 'Enable'} enrollment</button>
       </div>
@@ -136,7 +136,7 @@ export function Verification() {
   return (
     <div className="space-y-4">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">Clan Verification</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Clan Verification</h1>
       <select className="input max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
         <option value="">All statuses</option>{['pending', 'under_review', 'approved', 'rejected', 'resubmission_required'].map((s) => <option key={s} value={s}>{label(s)}</option>)}
       </select>
@@ -174,17 +174,17 @@ export function Cohorts() {
   return (
     <div className="space-y-6">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">Cohorts</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Cohorts</h1>
       <div className="card flex flex-wrap gap-3">
         <input className="input max-w-xs" placeholder="Cohort name" value={name} onChange={(e) => setName(e.target.value)} />
         {[7, 10].map((size) => <button key={size} className="btn-primary" disabled={!name} onClick={() => act(() => api.post('/api/mythic/admin/cohorts', { name, size }), 'Cohort created')}>Create {size}-member cohort</button>)}
         <span className="self-center text-xs text-ops-mute">Only 7 and 10 member cohorts exist; terms are fixed.</span>
       </div>
       {list.loading && <Spinner />}<ErrorBox message={list.error} />
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 xl:grid-cols-2">
         {list.data?.map((c) => (
           <div key={c.cohort_id} className="card space-y-3">
-            <div className="flex items-center justify-between"><h2 className="font-display text-xl font-bold text-white">{c.name}</h2><Badge status={c.status}>{c.status}</Badge></div>
+            <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-display text-xl font-bold text-white">{c.name}</h2><Badge status={c.status}>{c.status}</Badge></div>
             <div className="text-sm text-ops-mute">{c.members}/{c.capacity} members · {kes(c.monthly_kes)} × {c.months} · start {fmtDate(c.start_date)}</div>
             <Progress value={c.collected_kes} max={c.target_kes} />
             <div className="text-xs text-ops-mute">{kes(c.collected_kes)} / {kes(c.target_kes)}</div>
@@ -209,7 +209,7 @@ export function Cohorts() {
 function AssignButton({ cohort, apps, act }) {
   const eligible = (apps || []).filter((a) => (a.plan === cohort.plan) && !a.assigned)
   return (
-    <select className="input w-auto" defaultValue="" onChange={(e) => e.target.value && act(() => api.post(`/api/mythic/admin/cohorts/${cohort.cohort_id}/assign`, { application_id: Number(e.target.value) }), 'Member assigned')}>
+    <select className="input w-full sm:w-auto" defaultValue="" onChange={(e) => e.target.value && act(() => api.post(`/api/mythic/admin/cohorts/${cohort.cohort_id}/assign`, { application_id: Number(e.target.value) }), 'Member assigned')}>
       <option value="">Assign member…</option>
       {eligible.map((a) => <option key={a.id} value={a.id}>{a.gamer_tag}</option>)}
     </select>
@@ -245,7 +245,7 @@ export function Contributions() {
   return (
     <div className="space-y-8">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">Contributions &amp; finance</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Contributions &amp; finance</h1>
 
       <section className="space-y-2">
         <h2 className="font-display text-2xl font-bold text-white">Payment exceptions &amp; failures</h2>
@@ -302,11 +302,11 @@ export function Payouts() {
   return (
     <div className="space-y-6">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">Payouts</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Payouts</h1>
       <p className="text-sm text-ops-mute">Two different administrators must approve a locked manifest before funds move. Amounts and destinations cannot be changed; any change needs a new batch and new approvals.</p>
       {funded.length > 0 && (
         <section className="space-y-2"><h2 className="font-display text-2xl font-bold text-white">Fully funded cohorts</h2>
-          {funded.map((c) => <div key={c.cohort_id} className="card flex items-center justify-between"><span>{c.name} · {kes(c.collected_kes)}</span>
+          {funded.map((c) => <div key={c.cohort_id} className="card flex flex-wrap items-center justify-between gap-3"><span>{c.name} · {kes(c.collected_kes)}</span>
             <button className="btn-primary" onClick={() => act(() => api.post(`/api/mythic/admin/cohorts/${c.cohort_id}/payout-batch`), 'Payout batch requested for approval')}>Request payout approval</button></div>)}
         </section>
       )}

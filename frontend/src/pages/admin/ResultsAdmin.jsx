@@ -17,10 +17,10 @@ export default function ResultsAdmin() {
   return (
     <div className="space-y-6">
       {node}
-      <h1 className="font-display text-5xl font-extrabold text-white">Tournament Results</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Tournament Results</h1>
       <div className="card space-y-3">
         <h2 className="font-display text-xl font-bold text-white">New tournament</h2>
-        <div className="grid gap-3 sm:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
           <input className="input" placeholder="Name" value={nt.name} onChange={(e) => setNt({ ...nt, name: e.target.value })} />
           <input className="input" placeholder="Game" value={nt.game} onChange={(e) => setNt({ ...nt, game: e.target.value })} />
           <select className="input" value={nt.mode} onChange={(e) => setNt({ ...nt, mode: e.target.value })}><option value="battle_royale">Battle Royale</option><option value="multiplayer">Multiplayer</option></select>
@@ -28,7 +28,7 @@ export default function ResultsAdmin() {
           <input className="input" type="date" value={nt.starts_on} onChange={(e) => setNt({ ...nt, starts_on: e.target.value })} />
         </div>
         <button className="btn-primary" disabled={!nt.name || !nt.starts_on} onClick={() => act(() => api.post('/api/admin/results/tournaments', { ...nt, game_mode: nt.game_mode || null }), 'Tournament created')}>Create</button>
-        <div className="flex gap-2 border-t border-ops-line/60 pt-3">
+        <div className="flex flex-wrap gap-2 border-t border-ops-line/60 pt-3">
           <input className="input max-w-xs" placeholder="Add team name" value={team} onChange={(e) => setTeam(e.target.value)} />
           <button className="btn-ghost" disabled={!team} onClick={() => act(async () => { await api.post('/api/admin/teams', { name: team }); setTeam(''); teams.reload() }, 'Team added')}>Add team</button>
         </div>
@@ -107,11 +107,11 @@ function Manage({ id, teams, onClose }) {
           <div className="label">Standings preview (calculated from entered results)</div>
           {d.standings.length ? <><Podium top={d.standings.slice(0, 3)} /><Standings rows={d.standings} mode={d.mode} /></> : <p className="text-sm text-ops-mute">No matches yet.</p>}
 
-          <div className="flex items-center gap-2"><Field label="Tournament MVP"><input className="input" defaultValue={d.mvp_player || ''} id="mvp" /></Field>
+          <div className="flex flex-wrap items-end gap-2"><Field label="Tournament MVP"><input className="input" defaultValue={d.mvp_player || ''} id="mvp" /></Field>
             <button className="btn-ghost mt-5" onClick={() => { const reason = published ? window.prompt('Correction reason (required)') : null; if (published && !reason) return; act(() => api.put(`/api/admin/results/${id}/mvp`, { mvp_player: document.getElementById('mvp').value || null, reason }), 'MVP saved') }}>Save MVP</button></div>
 
           {d.matches.map((m) => (
-            <div key={m.match_no} className="flex items-center justify-between rounded-2xl bg-ops-raised p-3 text-sm">
+            <div key={m.match_no} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-ops-raised p-3 text-sm">
               <span>Match {m.match_no} · winner {m.winner}</span>
               {d.pub_status !== 'archived' && <button className="btn-ghost" onClick={() => edit(m)}>Edit</button>}
             </div>
@@ -120,7 +120,7 @@ function Manage({ id, teams, onClose }) {
           {form && (
             <div className="space-y-3 rounded-2xl bg-ops-raised p-4">
               <h3 className="font-display text-lg font-bold text-white">{form.editing ? `Edit match ${form.editing}` : 'New match'}</h3>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid gap-2 sm:grid-cols-3">
                 <Field label="Match #"><input className="input" type="number" min={1} disabled={!!form.editing} value={form.match_no} onChange={(e) => setForm({ ...form, match_no: Number(e.target.value) })} /></Field>
                 <Field label="Game mode"><input className="input" value={form.game_mode} onChange={(e) => setForm({ ...form, game_mode: e.target.value })} /></Field>
                 <Field label="Match MVP"><input className="input" value={form.mvp_player} onChange={(e) => setForm({ ...form, mvp_player: e.target.value })} /></Field>
@@ -128,18 +128,18 @@ function Manage({ id, teams, onClose }) {
               {form.entries ? (
                 <div className="space-y-2">
                   {form.entries.map((e, i) => (
-                    <div key={i} className="grid grid-cols-5 gap-1">
-                      <TeamSelect value={e.team_id} onChange={(x) => setEntry(i, 'team_id', x.target.value)} />
-                      <input className="input" type="number" min={1} placeholder="Place" value={e.placement} onChange={(x) => setEntry(i, 'placement', x.target.value)} />
-                      <input className="input" type="number" min={0} placeholder="Kills" value={e.kills} onChange={(x) => setEntry(i, 'kills', x.target.value)} />
-                      <input className="input" type="number" min={0} placeholder="Place pts" value={e.placement_points} onChange={(x) => setEntry(i, 'placement_points', x.target.value)} />
-                      <input className="input" type="number" min={0} placeholder="Kill pts" value={e.kill_points} onChange={(x) => setEntry(i, 'kill_points', x.target.value)} />
+                    <div key={i} className="grid grid-cols-2 gap-3 rounded-xl border border-ops-line p-3 sm:grid-cols-5 sm:gap-1 sm:border-0 sm:p-0">
+                      <Field label="Team"><TeamSelect value={e.team_id} onChange={(x) => setEntry(i, 'team_id', x.target.value)} /></Field>
+                      <Field label="Place"><input className="input" type="number" min={1} placeholder="Place" value={e.placement} onChange={(x) => setEntry(i, 'placement', x.target.value)} /></Field>
+                      <Field label="Kills"><input className="input" type="number" min={0} placeholder="Kills" value={e.kills} onChange={(x) => setEntry(i, 'kills', x.target.value)} /></Field>
+                      <Field label="Place pts"><input className="input" type="number" min={0} placeholder="Place pts" value={e.placement_points} onChange={(x) => setEntry(i, 'placement_points', x.target.value)} /></Field>
+                      <Field label="Kill pts"><input className="input" type="number" min={0} placeholder="Kill pts" value={e.kill_points} onChange={(x) => setEntry(i, 'kill_points', x.target.value)} /></Field>
                     </div>
                   ))}
                   <button className="btn-ghost" onClick={() => setForm({ ...form, entries: [...form.entries, emptyEntry()] })}>+ Team</button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid gap-2 sm:grid-cols-2">
                   <TeamSelect value={form.team_a_id} onChange={(e) => setForm({ ...form, team_a_id: e.target.value })} />
                   <TeamSelect value={form.team_b_id} onChange={(e) => setForm({ ...form, team_b_id: e.target.value })} />
                   <input className="input" type="number" min={0} value={form.score_a} onChange={(e) => setForm({ ...form, score_a: e.target.value })} aria-label="Score A" />
@@ -148,7 +148,7 @@ function Manage({ id, teams, onClose }) {
               )}
               <Field label="Match screenshot (optional)"><input className="input" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => e.target.files[0] && upload(e.target.files[0]).catch((x) => toast(x.message, true))} /></Field>
               {published && <Field label="Correction reason (required)"><input className="input" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} /></Field>}
-              <div className="flex gap-2"><button className="btn-primary" onClick={save}>Save match</button><button className="btn-ghost" onClick={() => setForm(null)}>Cancel</button></div>
+              <div className="flex flex-wrap gap-2"><button className="btn-primary" onClick={save}>Save match</button><button className="btn-ghost" onClick={() => setForm(null)}>Cancel</button></div>
             </div>
           )}
 

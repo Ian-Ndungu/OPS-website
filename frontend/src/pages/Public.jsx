@@ -28,7 +28,7 @@ export function AnnouncementCard({ a, lead = false }) {
 }
 
 function LatestResult({ t }) {
-  if (!t) return <div className="rounded-[32px] bg-ops-card p-8 text-ops-mute">No results have been published yet. They appear here as soon as an admin publishes them.</div>
+  if (!t) return <div className="rounded-[32px] bg-ops-card p-5 sm:p-8 text-ops-mute">No results have been published yet. They appear here as soon as an admin publishes them.</div>
   return (
     <Link to={`/results/${t.id}`} className="block rounded-[32px] bg-ops-card p-6 transition-colors hover:bg-ops-raised sm:p-8">
       <div className="flex items-center justify-between gap-3">
@@ -62,11 +62,11 @@ export function Home() {
     <div className="space-y-16">
       <section className="grid items-center gap-10 pt-4 lg:grid-cols-[1.15fr_.85fr]">
         <div>
-          <h1 className="max-w-[16ch] text-balance font-display text-5xl font-extrabold leading-[0.98] text-white sm:text-6xl lg:text-7xl">
-            Results you can trust. A clan you can save with.
+          <h1 className="max-w-[16ch] text-balance font-display text-4xl font-extrabold leading-[0.98] text-white sm:text-6xl lg:text-7xl">
+            Play together. Rise together.
           </h1>
           <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-slate-300">
-            Official OPS tournament results, clan announcements, and the Mythic Circle: a fixed-term savings program for verified clan members.
+            Your home for OPSKe tournament results, clan news, and shared goals. Follow the action and build your savings with Mythic Circle, our fixed-term savings program for verified clan members.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/results" className="btn-primary !px-6 !py-3 text-base">See latest results</Link>
@@ -82,7 +82,7 @@ export function Home() {
           {plan ? (
             <>
               <div className="my-4"><SeatRing seats={plan.members} filled={plan.members - Math.min(plan.available_slots, plan.members)} open={Math.min(plan.available_slots, plan.members)} size={210}>
-                <div className="num font-display text-5xl font-extrabold text-white">{Math.min(plan.available_slots, plan.members)}</div>
+                <div className="num font-display text-3xl sm:text-5xl font-extrabold text-white">{Math.min(plan.available_slots, plan.members)}</div>
                 <div className="text-sm text-ops-mute">seats open</div>
               </SeatRing></div>
               <p className="text-sm text-slate-300">{plan.members} players put in {kes(plan.monthly_kes)} a month for {plan.months} months. Everyone is paid {kes(plan.expected_payout_kes)} together at the end.</p>
@@ -118,29 +118,34 @@ export function Home() {
 }
 
 export function Login({ register = false }) {
-  const { login, refresh } = useAuth()
+  const { login } = useAuth()
   const nav = useNavigate()
   const [f, setF] = useState({ email: '', password: '', gamer_tag: '' })
+  const [pending, setPending] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
   const submit = async (e) => {
-    e.preventDefault(); setErr(null)
+    e.preventDefault(); setErr(null); setBusy(true)
     try {
       if (register) {
-        const r = await api.post('/api/auth/register', f)
-        localStorage.setItem('ops_token', r.token); await refresh()
+        await api.post('/api/auth/register', f)
+        setPending(true)
+        return
       } else await login(f.email, f.password)
       nav('/')
     } catch (x) { setErr(x.message) }
+    finally { setBusy(false) }
   }
+  if (pending && register) return <div role="status" className="tile mx-auto max-w-md space-y-4"><h1 className="font-display text-3xl font-bold">Account pending approval</h1><p>Your account has been created. An admin must approve it before you can log in.</p><Link className="btn-ghost" to="/login">Go to login</Link></div>
   return (
-    <form onSubmit={submit} className="mx-auto mt-6 max-w-md space-y-5 rounded-[32px] bg-ops-card p-8">
-      <h1 className="font-display text-4xl font-extrabold text-white">{register ? 'Join OPS' : 'Welcome back'}</h1>
+    <form onSubmit={submit} className="mx-auto mt-6 max-w-md space-y-5 rounded-[32px] bg-ops-card p-5 sm:p-8">
+      <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-white">{register ? 'Join OPS' : 'Welcome back'}</h1>
       <ErrorBox message={err} />
       {register && <Field label="Gamer tag"><input className="input" required value={f.gamer_tag} onChange={set('gamer_tag')} autoComplete="nickname" /></Field>}
       <Field label="Email"><input className="input" type="email" required value={f.email} onChange={set('email')} autoComplete="email" /></Field>
       <Field label="Password"><input className="input" type="password" required minLength={8} value={f.password} onChange={set('password')} autoComplete={register ? 'new-password' : 'current-password'} /></Field>
-      <button className="btn-primary w-full !py-3">{register ? 'Create account' : 'Log in'}</button>
+      <button disabled={busy} className="btn-primary w-full !py-3">{register ? 'Create account' : 'Log in'}</button>
       <p className="text-center text-sm text-ops-mute">{register ? <Link className="link" to="/login">Have an account? Log in</Link> : <Link className="link" to="/register">New to OPS? Create an account</Link>}</p>
     </form>
   )
@@ -156,7 +161,7 @@ export function Results() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-5xl font-extrabold text-white">Tournament results</h1>
+        <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Tournament results</h1>
         <p className="mt-2 max-w-[60ch] text-slate-300">Only results published by OPS admins appear here. Corrections are tracked, and standings are recalculated from the published matches.</p>
       </div>
       <div className="grid gap-3 rounded-[28px] bg-ops-card p-4 sm:grid-cols-2 lg:grid-cols-6">
@@ -197,7 +202,7 @@ export function ResultDetail() {
     <div className="space-y-10">
       <div>
         <Link to="/results" className="text-sm font-semibold text-ops-link">All results</Link>
-        <h1 className="mt-3 font-display text-5xl font-extrabold leading-tight text-white">{t.name}</h1>
+        <h1 className="mt-3 font-display text-3xl sm:text-5xl font-extrabold leading-tight text-white">{t.name}</h1>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-ops-mute">
           <Badge status={t.event_status}>{t.event_status}</Badge>
           <span>{t.game}{t.game_mode ? `, ${t.game_mode}` : ''}. {fmtDate(t.starts_on)}.</span>
@@ -247,7 +252,7 @@ export function Announcements() {
   const rest = data?.filter((a) => a !== lead) || []
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-5xl font-extrabold text-white">Announcements</h1>
+      <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white">Announcements</h1>
       <div className="space-y-4">
         <input className="input max-w-md !rounded-full !px-5" placeholder="Search announcements" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search announcements" />
         <div className="flex flex-wrap gap-2" role="group" aria-label="Category">
@@ -275,7 +280,7 @@ export function AnnouncementDetail() {
       <Link to="/announcements" className="text-sm font-semibold text-ops-link">All announcements</Link>
       {a.image && <img src={a.image} alt="" className="mt-5 max-h-96 w-full rounded-[28px] object-cover" />}
       <div className="mt-6 flex flex-wrap gap-2"><CategoryChip c={a.category} />{a.pinned && <span className="badge tone-warn">Pinned</span>}</div>
-      <h1 className="mt-3 font-display text-5xl font-extrabold leading-tight text-white">{a.title}</h1>
+      <h1 className="mt-3 font-display text-3xl sm:text-5xl font-extrabold leading-tight text-white">{a.title}</h1>
       <p className="mt-2 text-sm text-ops-mute">{fmtDate(a.published_at)}{a.author ? ` by ${a.author}` : ''}</p>
       {/* Server-sanitised HTML (bleach allow-list) */}
       <div className="prose-ops mt-6" dangerouslySetInnerHTML={{ __html: a.content_html }} />

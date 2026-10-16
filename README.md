@@ -29,7 +29,7 @@ npm install
 npm run dev                     # http://localhost:5173 (proxies /api and /uploads)
 
 # 4. Tests
-cd ../backend && pytest -q      # 46 tests, SQLite in-memory, no network
+cd ../backend && pytest -q      # 50 tests, SQLite in-memory, no network
 ```
 
 ## Design system
@@ -95,3 +95,17 @@ Admin: `/admin/mythic-circle` (overview, registration periods, content), `/admin
 - Mount the routers in your `main.py`, copy `models/` and `services/`, and generate your own Alembic revision from
   your Base (`0001_...` here is for the standalone schema).
 - Copy `pages/`, `components/`, add the routes from `main.jsx`, and merge the Tailwind tokens.
+
+## Clan applications and account approval
+
+- Public `/join-clan`: no login required. Applicants submit an updated game name, clan tag,
+  player ID, game, email, contact, join message, and a PNG/JPEG/WebP profile screenshot (maximum 5 MB).
+- `/admin/clan-requests`: clan verifiers and super admins privately view evidence, filter requests,
+  and approve or reject pending applications with an internal note. Contact applicants using their
+  supplied contact details; this feature does not automatically send messages or create accounts.
+- New public account registrations are pending and receive no login token. Review them at
+  `/admin/accounts` to activate or reject access. Clan application approval and account approval
+  are separate; neither automatically grants Mythic membership verification.
+- On deployment, run `cd backend && alembic upgrade head` before starting the updated backend.
+  Migration 0002 adds clan requests; 0003 adds account status and preserves existing accounts as active.
+  Deploy the updated frontend alongside the backend.

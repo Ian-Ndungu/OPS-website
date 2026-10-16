@@ -11,6 +11,9 @@ import { MythicDashboard, MythicLanding } from './pages/Mythic'
 import { Cohorts, Contributions, MythicOverview, Payouts, Verification } from './pages/admin/MythicAdmin'
 import ResultsAdmin from './pages/admin/ResultsAdmin'
 import AnnouncementsAdmin from './pages/admin/AnnouncementsAdmin'
+import JoinClan from './pages/JoinClan'
+import ClanRequests from './pages/admin/ClanRequests'
+import AccountsAdmin from './pages/admin/AccountsAdmin'
 
 /* In the existing OPS app: mount these <Route>s inside your router and reuse your layouts. */
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -22,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Login register />} />
+            <Route path="/join-clan" element={<JoinClan />} />
             <Route path="/mythic-circle" element={<MythicLanding />} />
             <Route path="/dashboard/mythic-circle" element={<RequireAuth><MythicDashboard /></RequireAuth>} />
             <Route path="/results" element={<Results />} />
@@ -36,6 +40,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/admin/mythic-circle/contributions" element={<Contributions />} />
             <Route path="/admin/mythic-circle/payouts" element={<Payouts />} />
             <Route path="/admin/results" element={<ResultsAdmin />} />
+            <Route path="/admin/clan-requests" element={<ClanRequests />} />
+            <Route path="/admin/accounts" element={<AccountsAdmin />} />
             <Route path="/admin/announcements" element={<AnnouncementsAdmin />} />
           </Route>
         </Routes>

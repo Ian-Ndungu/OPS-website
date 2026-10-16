@@ -13,7 +13,7 @@ export function AnnouncementCard({ a, lead = false }) {
   return (
     <Link to={`/announcements/${a.slug}`}
       className={`group block overflow-hidden rounded-[28px] bg-ops-card transition-colors hover:bg-ops-raised ${lead && a.image ? 'md:grid md:grid-cols-5' : ''}`}>
-      {a.image && <img src={a.image} alt="" className={`w-full object-cover ${lead ? 'h-56 md:col-span-2 md:h-full' : 'h-44'}`} />}
+      {a.image && <img src={a.image} alt="" className={`w-full bg-ops-raised object-contain ${lead ? 'h-56 md:col-span-2 md:h-full md:max-h-96' : 'h-44'}`} />}
       <div className={`p-6 ${lead && a.image ? 'md:col-span-3' : ''}`}>
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <CategoryChip c={a.category} />
@@ -278,7 +278,7 @@ export function AnnouncementDetail() {
   return (
     <article className="mx-auto max-w-3xl">
       <Link to="/announcements" className="text-sm font-semibold text-ops-link">All announcements</Link>
-      {a.image && <img src={a.image} alt="" className="mt-5 max-h-96 w-full rounded-[28px] object-cover" />}
+      {a.image && <img src={a.image} alt="" className="mt-5 h-auto w-full rounded-[28px] bg-ops-raised object-contain" />}
       <div className="mt-6 flex flex-wrap gap-2"><CategoryChip c={a.category} />{a.pinned && <span className="badge tone-warn">Pinned</span>}</div>
       <h1 className="mt-3 font-display text-3xl sm:text-5xl font-extrabold leading-tight text-white">{a.title}</h1>
       <p className="mt-2 text-sm text-ops-mute">{fmtDate(a.published_at)}{a.author ? ` by ${a.author}` : ''}</p>

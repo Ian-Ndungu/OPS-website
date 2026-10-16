@@ -16,11 +16,13 @@ export default function AnnouncementsAdmin() {
   const act = useAction(list.reload, toast)
   const [form, setForm] = useState(null)
   const [when, setWhen] = useState('')
+  const [uploading, setUploading] = useState(false)
   const finance = hasRole('finance_admin')
 
-  const edit = (a) => setForm({ id: a.id, title: a.title, category: a.category, summary: a.summary, content_html: a.content_html, image_path: null, pinned: a.pinned, featured: a.featured, email_notify: false, target: a.target || blank().target })
+  const edit = (a) => setForm({ id: a.id, title: a.title, category: a.category, summary: a.summary, content_html: a.content_html, image_path: a.image_path ?? undefined, pinned: a.pinned, featured: a.featured, email_notify: false, target: a.target || blank().target })
   const payload = () => ({ ...form, target: { audience: form.target.audience, divisions: form.target.divisions, cohort_ids: form.target.cohort_ids } })
   const save = async (publish) => {
+    if (uploading) return
     await act(async () => {
       let id = form.id
       if (id) { const { id: _i, ...patch } = payload(); await api.patch(`/api/admin/announcements/${id}`, patch) }
@@ -30,7 +32,15 @@ export default function AnnouncementsAdmin() {
       setForm(null)
     }, publish ? 'Saved & publishing handled' : 'Draft saved')
   }
-  const upload = async (file) => { const fd = new FormData(); fd.append('file', file); const r = await api.form('/api/admin/announcements/upload', fd); setForm((f) => ({ ...f, image_path: r.path })) }
+  const upload = async (file) => {
+    if (file.size > 5 * 1024 * 1024) throw new Error('Image must be 5 MB or smaller')
+    setUploading(true)
+    try {
+      const fd = new FormData(); fd.append('file', file)
+      const result = await api.form('/api/admin/announcements/upload', fd)
+      setForm((f) => f ? { ...f, image_path: result.path } : f)
+    } finally { setUploading(false) }
+  }
   const setT = (k, v) => setForm({ ...form, target: { ...form.target, [k]: v } })
 
   return (
@@ -67,8 +77,10 @@ export default function AnnouncementsAdmin() {
             <Field label="Title"><input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></Field>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Category"><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>{cats.data?.map((c) => <option key={c}>{c}</option>)}</select></Field>
-              <Field label="Featured image"><input className="input" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => e.target.files[0] && upload(e.target.files[0]).catch((x) => toast(x.message, true))} /></Field>
+              <Field label="Featured image (up to 5 MB)"><input disabled={uploading} className="input" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => e.target.files[0] && upload(e.target.files[0]).catch((x) => toast(x.message, true))} /></Field>
             </div>
+            {uploading && <p role="status" className="text-sm text-ops-mute">Uploading image… Wait before saving.</p>}
+            {form.image_path && <img src={`/uploads/${form.image_path}`} alt="Featured image preview" className="max-h-64 w-full rounded-2xl object-contain" />}
             <Field label="Short description (max 400)"><textarea className="input" rows={2} maxLength={400} value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} /></Field>
             <div><span className="label">Content</span><RichTextEditor value={form.content_html} onChange={(v) => setForm((f) => ({ ...f, content_html: v }))} /></div>
             <div className="flex flex-wrap gap-4 text-sm">
@@ -90,9 +102,9 @@ export default function AnnouncementsAdmin() {
             )}
             <Field label="Schedule (optional)"><input className="input" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} /></Field>
             <div className="flex flex-wrap gap-2">
-              <button className="btn-ghost" onClick={() => save(null)}>Save draft</button>
-              <button className="btn-primary" onClick={() => save('now')}>Publish now</button>
-              <button className="btn-ghost" disabled={!when} onClick={() => save('schedule')}>Schedule</button>
+              <button disabled={uploading} className="btn-ghost" onClick={() => save(null)}>Save draft</button>
+              <button disabled={uploading} className="btn-primary" onClick={() => save('now')}>Publish now</button>
+              <button className="btn-ghost" disabled={uploading || !when} onClick={() => save('schedule')}>Schedule</button>
             </div>
           </div>
         </Modal>

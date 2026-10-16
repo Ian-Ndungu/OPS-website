@@ -10,7 +10,7 @@ from ..models.content import Announcement
 from ..models.core import Notification, Role, User
 from ..security import current_user, optional_user, require_roles
 from ..services import announcements as svc
-from .mythic import save_upload
+from .media import save_public_image
 
 router = APIRouter(prefix="/api", tags=["announcements"])
 admin_dep = require_roles(Role.content_admin, Role.finance_admin)
@@ -137,7 +137,7 @@ def admin_list(status: str | None = None, _: User = Depends(admin_dep), db: Sess
     q = select(Announcement).order_by(Announcement.id.desc())
     if status:
         q = q.where(Announcement.status == status)
-    return [card(a) | {"status": a.status, "publish_at": a.publish_at, "target": a.target, "content_html": a.content_html}
+    return [card(a) | {"status": a.status, "publish_at": a.publish_at, "image_path": a.image_path, "target": a.target, "content_html": a.content_html}
             for a in db.scalars(q)]
 
 
@@ -154,8 +154,9 @@ def patch(aid: int, body: AnnouncementPatch, admin: User = Depends(admin_dep), d
 
 
 @router.post("/admin/announcements/upload")
-def upload(file: UploadFile = File(...), _: User = Depends(admin_dep)):
-    return {"path": save_upload(file, "announcements")}
+def upload(file: UploadFile = File(...), _: User = Depends(admin_dep), db: Session = Depends(get_db)):
+    path = save_public_image(file, "announcements", db)
+    return {"path": path, "url": f"/uploads/{path}"}
 
 
 class PublishIn(BaseModel):

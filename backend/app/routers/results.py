@@ -10,7 +10,7 @@ from ..models.content import Team, Tournament
 from ..models.core import Role, User
 from ..security import require_roles
 from ..services import results as svc
-from .mythic import save_upload
+from .media import save_public_image
 
 router = APIRouter(prefix="/api", tags=["results"])
 editor = require_roles(Role.content_admin, Role.results_admin)
@@ -158,8 +158,8 @@ def _guard_correction(db: Session, tid: int, admin: User):
 
 
 @router.post("/admin/results/{tid}/screenshot")
-def upload_screenshot(tid: int, file: UploadFile = File(...), _: User = Depends(editor)):
-    return {"path": save_upload(file, "match-screenshots")}
+def upload_screenshot(tid: int, file: UploadFile = File(...), _: User = Depends(editor), db: Session = Depends(get_db)):
+    return {"path": save_public_image(file, "match-screenshots", db)}
 
 
 class MvpIn(BaseModel):

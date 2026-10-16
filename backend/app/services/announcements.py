@@ -83,7 +83,7 @@ def update(db: Session, admin: User, a: Announcement, data: dict) -> Announcemen
         raise AnnouncementError("Archived announcements cannot be edited", 409)
     if "target" in data and data["target"]:
         check_target_permission(admin, data["target"])
-        if a.status == "published" and a.notified:
+        if a.status == "published" and a.notified and data["target"] != a.target:
             raise AnnouncementError("Audience of a published notice cannot change; unpublish and republish", 409)
         a.target = data["target"]
     for k in ("title", "summary", "pinned", "featured", "email_notify", "image_path"):

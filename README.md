@@ -109,3 +109,12 @@ Admin: `/admin/mythic-circle` (overview, registration periods, content), `/admin
 - On deployment, run `cd backend && alembic upgrade head` before starting the updated backend.
   Migration 0002 adds clan requests; 0003 adds account status and preserves existing accounts as active.
   Deploy the updated frontend alongside the backend.
+
+## Public image storage
+
+Migration 0004 stores new announcement images and match screenshots in the database so
+uploads survive application restarts and deployments. Run `alembic upgrade head` before
+starting the updated backend. Existing `/uploads/announcements/...` and
+`/uploads/match-screenshots/...` URLs are preserved, with legacy disk fallback. Images
+already lost from temporary disk storage must be uploaded again through the admin editor.
+Private clan screenshots are never served by this public route.

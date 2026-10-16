@@ -5,12 +5,11 @@ from datetime import date
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from . import models  # noqa: F401
 from .config import settings
 from .db import SessionLocal
-from .routers import announcements, auth, clan, mythic, results
+from .routers import announcements, auth, clan, media, mythic, results
 from .services import announcements as ann_svc
 from .services import mythic as mythic_svc
 
@@ -48,9 +47,9 @@ os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 # Only public image folders are served; clan screenshots are admin-only via the API.
 for sub in ("announcements", "match-screenshots"):
     os.makedirs(os.path.join(settings.UPLOAD_DIR, sub), exist_ok=True)
-    app.mount(f"/uploads/{sub}", StaticFiles(directory=os.path.join(settings.UPLOAD_DIR, sub)), name=sub)
+    # Public media routes read durable database uploads, with legacy disk fallback.
 
-for r in (auth.router, clan.router, mythic.router, results.router, announcements.router):
+for r in (auth.router, clan.router, media.router, mythic.router, results.router, announcements.router):
     app.include_router(r)
 
 

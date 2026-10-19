@@ -126,6 +126,7 @@ export function Login({ register = false }) {
   const nav = useNavigate()
   const [f, setF] = useState({ email: '', password: '', gamer_tag: '' })
   const [pending, setPending] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
@@ -148,7 +149,19 @@ export function Login({ register = false }) {
       <ErrorBox message={err} />
       {register && <Field label="Gamer tag"><input className="input" required value={f.gamer_tag} onChange={set('gamer_tag')} autoComplete="nickname" /></Field>}
       <Field label="Email"><input className="input" type="email" required value={f.email} onChange={set('email')} autoComplete="email" /></Field>
-      <Field label="Password"><input className="input" type="password" required minLength={8} value={f.password} onChange={set('password')} autoComplete={register ? 'new-password' : 'current-password'} /></Field>
+      <div>
+        <label className="label" htmlFor="account-password">Password</label>
+        <div className="relative">
+          <input id="account-password" className="input pr-14" type={showPassword ? 'text' : 'password'} required minLength={8} value={f.password} onChange={set('password')} autoComplete={register ? 'new-password' : 'current-password'} />
+          <button type="button" className="absolute inset-y-0 right-1 flex w-11 items-center justify-center rounded-lg text-ops-mute hover:text-white" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword} aria-controls="account-password">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+              {showPassword && <path d="m3 3 18 18" />}
+            </svg>
+          </button>
+        </div>
+      </div>
       <button disabled={busy} className="btn-primary w-full !py-3">{register ? 'Create account' : 'Log in'}</button>
       <p className="text-center text-sm text-ops-mute">{register ? <Link className="link" to="/login">Have an account? Log in</Link> : <Link className="link" to="/register">New to OPS? Create an account</Link>}</p>
     </form>
